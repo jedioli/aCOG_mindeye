@@ -28,19 +28,28 @@ import Queue    #for thread-safe message sending, to workload and to record.
 
 
 class Listener(Thread):
-    def __init__(self):
+    def __init__(self, queue):
         super(Listener, self).__init__()
         data_port = "5000"
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.SUB)
         self.socket.connect("tcp://127.0.0.1:" + data_port)
         self.socket.setsockopt(zmq.SUBSCRIBE, '')
+        self.pupil_data = queue
+        self.ready = True
+        self.put_counter = 0
+    
+    def stop(self):
+        self.ready = False
     
     def run(self):
-        self.listen()
+        while self.ready:
+            self.listen()
+        print "done listening"
+        return
     
     def listen(self):
-        while True:
+        while self.put_counter < 50:        # collecting 50 frames for testing
             data_msg = self.socket.recv()
 
             items = data_msg.split("\n") 
@@ -48,22 +57,28 @@ class Listener(Thread):
             data_dict = dict([i.split(':') for i in items[:-1] ])
     
             if msg_type == 'Pupil':
+                self.pupil_data.put(data_dict)
+                self.put_counter += 1
+                
+                '''
                 print "raw msg:\n", data_msg
                 try:
                     s = ""
                     for key in data_dict:
                         s += str(key) + " "
     
-        #        print "keys are: " + s
+                print "keys are: " + s
                 #they are: "norm_pos confidence id timestamp diameter"
-        #    print "norm_gaze: ", items['norm_gaze']
+                print "norm_gaze: ", items['norm_gaze']
 
                 except KeyError:
                     pass
+                '''
             else:
-               # process non gaze position events from plugins here\
+                # process non gaze position events from plugins here\
+                print "not Pupil data"
                 pass
-
+        pass
 
 
 

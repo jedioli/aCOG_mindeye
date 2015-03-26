@@ -11,12 +11,14 @@
 
 from threading import Thread
 import Queue
+import csv
 
 
 # RESOURCES:
 #   https://docs.python.org/2/library/queue.html
 #   http://pymotw.com/2/threading/index.html#module-threading
 #   http://pymotw.com/2/Queue/index.html#module-Queue
+#   https://docs.python.org/2/library/csv.html, particularly the DictWriter object
 
 # NOTES:
 #   this Queue class seems really useful. maybe try using join() and task_done()?
@@ -45,9 +47,29 @@ class Recorder(Thread):
         self.begin = True
         
     def tofile(self):
-        with open(self.filename, 'w') as f:
-            while not self.pupil_data.empty():
-                datum = self.pupil_data.get()
-                f.write(str(datum) + '\n')
+        if self.filename[-3:] == 'txt':
+            with open(self.filename, 'w') as f:
+                while not self.pupil_data.empty():
+                    datum = self.pupil_data.get()
+                    f.write(str(datum) + '\n')
+            pass
         
-        pass
+        
+        # this version assumes each datum is a dict
+        if self.filename[-3:] == 'csv':
+            with open(self.filename, 'w') as f:
+                if self.pupil_data.empty():
+                    print "no data to output!"
+                    return
+                datum = self.pupil_data.get()
+                header = []
+                for key in datum:
+                    header.append(key)
+                writer = csv.DictWriter(f, fieldnames=header)
+                writer.writeheader()
+                writer.writerow(datum)
+                while not self.pupil_data.empty():
+                    datum = self.pupil_data.get()
+                    writer.writerow(datum)
+        
+            pass
