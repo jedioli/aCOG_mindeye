@@ -61,15 +61,26 @@ class Recorder(Thread):
                 if self.pupil_data.empty():
                     print "no data to output!"
                     return
-                datum = self.pupil_data.get()
-                header = []
+            #    datum = self.pupil_data.get()
+            #    header = []
+            #    header = ['timestamp', 'diameter', 'major', 'ellipse', 'norm_pos', 'confidence', 'id', 'roi_center']
+                header = ['timestamp', 'diameter', 'confidence']
+                '''
                 for key in datum:
                     header.append(key)
+                while not self.pupil_data.empty():
+                    datum = self.pupil_data.get()
+                    for key in datum:
+                        if key not in header:
+                            header.append(key)
+                print "list of column headers:"
+                print header
+                '''
                 writer = csv.DictWriter(f, fieldnames=header)
                 writer.writeheader()
-                writer.writerow(datum)
+            #    writer.writerow(datum)
                 while not self.pupil_data.empty():
                     datum = self.pupil_data.get()
                     writer.writerow(datum)
-        
+                
             pass

@@ -45,10 +45,25 @@ class Listener(Thread):
     def run(self):
         while self.ready:
             self.listen()
-        print "done listening"
+        print "done listening: " + str(self.put_counter) + " events"
         return
     
     def listen(self):
+        data_msg = self.socket.recv()
+
+        items = data_msg.split("\n") 
+        msg_type = items.pop(0)
+        data_dict = dict([i.split(':') for i in items[:-1] ])
+    
+        if msg_type == 'Pupil':
+            self.pupil_data.put(data_dict)
+            self.put_counter += 1
+        else:
+            # process non gaze position events from plugins here\
+            # These are all "Gaze" events, but only ever lists timestamp and confidence. Not sure what it's for.
+            pass
+        
+        """
         while self.put_counter < 50:        # collecting 50 frames for testing
             data_msg = self.socket.recv()
 
@@ -76,8 +91,16 @@ class Listener(Thread):
                 '''
             else:
                 # process non gaze position events from plugins here\
-                print "not Pupil data"
+                # These are all "Gaze" events, but only ever lists timestamp and confidence. Not sure what it's for.
+                '''
+                print "not Pupil data: " + str(msg_type)
+                list = []
+                for key in data_dict:
+                    list.append(key)
+                print list
+                '''
                 pass
+        """
         pass
 
 

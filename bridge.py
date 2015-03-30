@@ -62,24 +62,39 @@ if __name__ == '__main__':
     starter.setDaemon(False)
     starter.start()
     
-    time.sleep(5)
+    time.sleep(20)
     
     pupil_data = Queue()
     
+    cmd = raw_input("Enter a char when ready. > ")
+    if cmd:
+        pass
+    else:
+        print "else branch of cmd"
+        pass
+    
+    # Need to be sure to start recording camera frames as well
     
     ear = pupil.Listener(pupil_data)
     ear.setDaemon(False)
     ear.start()
     
     
-    scribe = record.Recorder('actual_test.csv', pupil_data)
+    scribe = record.Recorder('test_w_tracker_matb.csv', pupil_data)
     scribe.setDaemon(False)
     scribe.start()
     
-    time.sleep(5)
+    time.sleep(10)
+    cmd = raw_input("Enter a char when finished. > ")
+    if cmd:
+        ear.stop()
+        scribe.ready()
+    else:
+        print "else branch of cmd"
+        ear.stop()
+        scribe.ready()
     
-    ear.stop()
-    scribe.ready()
+    print "all done with bridge"
     
     '''
     stuff = Queue()
