@@ -14,7 +14,7 @@ import threading
 from Queue import Queue
 import time     # mainly for debugging purposes
 
-import pupil
+import pupilsssss   # HEY! LISTEN! be sure you record VIDEO while doing this!
 import record
 
 
@@ -79,6 +79,11 @@ if __name__ == '__main__':
     ear.setDaemon(False)
     ear.start()
     
+    '''
+    mouth = pupil.Remote()
+    mouth.setDaemon(False)
+    mouth.start()
+    '''
     
     scribe = record.Recorder('test_w_tracker_matb.csv', pupil_data)
     scribe.setDaemon(False)
@@ -117,11 +122,7 @@ if __name__ == '__main__':
     scribe.ready()
     '''
     
-    '''
-    mouth = pupil.Remote()
-    mouth.setDaemon(False)
-    mouth.start()
-    '''
+    
     
     
 #    ear.daemon = False
