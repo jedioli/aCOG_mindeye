@@ -1,0 +1,22 @@
+# 03-30-2015     12:16:23     SYSM_2015_03301214.txt
+#
+# Events Filename: MATB_EVENTS.xml
+#
+# Timeout (in seconds):  Lights = 30   Scales = 30
+#
+# RT = Response Time (in seconds)
+# SYS_OK = An event for the system selected is active
+#
+#-TIME-      -RT-    -SYSTEM- -LIGHT/SCALE-  -SYS_OK-  -REMARKS-
+#-------------------------------------------------------------------------------------------------------
+ 00:00:21.8   13.8    Light    GREEN          TRUE      
+ 00:00:22.3   02.3    Light    RED            TRUE      
+ 00:00:48.0  -10      Scale    ONE                     - Event Timedout 
+ 00:00:54.8   01.8    Light    RED            TRUE      
+ 00:01:09.9  -10      Scale    TWO                     - Event Timedout 
+ 00:01:10.3           Scale    TWO            FALSE     
+ 00:01:11.9   01.9    Scale    FOUR           TRUE      
+ 00:01:35.1   04.1    Scale    TWO            TRUE      
+ 00:02:13.3   03.3    Light    GREEN          TRUE      
+ 00:02:15.1           Light    RED            FALSE     
+ 00:02:36.6   03.6    Scale    THREE          TRUE      

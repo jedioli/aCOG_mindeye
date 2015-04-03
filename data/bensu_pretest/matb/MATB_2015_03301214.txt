@@ -1,0 +1,74 @@
+# 03-30-2015     12:16:23     MATB_2015_03301214.txt
+#
+# Events Filename: MATB_EVENTS.xml
+#
+# TIME          EVENT    ACTION                                     REMARKS
+#-------------------------------------------------------------------------------------------------------
+00:00:00.0          Device Initialization:                        - Joystick Connected -   
+00:00:00.0       1  Event Processed:  Control
+00:00:01.0       2  Event Processed:  Scheduling                  - RESMAN and SYSMON Active
+00:00:02.0       3  Event Processed:  Scheduling                  - TRACK in Manual Mode
+00:00:05.0       4  Event Processed:  Resource Management         - Pump ONE Failed
+00:00:08.0       5  Event Processed:  System Monitoring           - GREEN Light
+00:00:08.3          Subject Response: Resource Management         - Pump ONE Response Inappropriate
+00:00:10.0       6  Event Processed:  Scheduling                  - COMM Session Started
+00:00:15.0       7  Event Processed:  Communications              - COM TWO OTHER Ship
+00:00:17.0          Recording Interval Triggered: Tracking 
+00:00:20.0       8  Event Processed:  System Monitoring           - RED Light
+00:00:21.8          Subject Response: System Monitoring           - GREEN Light
+00:00:22.3          Subject Response: System Monitoring           - RED Light
+00:00:30.0          Recording Interval Triggered: Resource Management
+00:00:31.9          Recording Interval Triggered: Tracking 
+00:00:35.0       9  Event Processed:  Resource Management         - Pump ONE Fixed
+00:00:38.0      10  Event Processed:  System Monitoring           - Scale ONE
+00:00:40.0          Event Terminated: Communications
+00:00:40.0      11  Event Processed:  Communications              - COM ONE OWN Ship
+00:00:45.0      12  Event Processed:  Resource Management         - Pump FIVE Failed
+00:00:46.3          Subject Response: Communications              - COM ONE
+00:00:47.0          Recording Interval Triggered: Tracking 
+00:00:47.1          Subject Response: Communications              - FREQ Integer
+00:00:48.0          Event Terminated: System Monitoring
+00:00:48.6          Subject Response: Communications              - FREQ Decimal
+00:00:49.3          Subject Response: Communications              - FREQ Decimal
+00:00:51.2          Subject Response: Communications              - Enter Button Selected
+00:00:53.0      13  Event Processed:  System Monitoring           - RED Light
+00:00:54.8          Subject Response: System Monitoring           - RED Light
+00:00:57.0          Subject Response: Resource Management         - Pump FIVE Response Inappropriate
+00:01:00.0      14  Event Processed:  System Monitoring           - Scale TWO
+00:01:00.0          Recording Interval Triggered: Resource Management
+00:01:02.0          Recording Interval Triggered: Tracking 
+00:01:09.9          Event Terminated: System Monitoring
+00:01:10.0      15  Event Processed:  System Monitoring           - Scale FOUR
+00:01:10.3          Subject Response: System Monitoring           - Scale TWO Response Inappropriate
+00:01:11.9          Subject Response: System Monitoring           - Scale FOUR
+00:01:15.0      16  Event Processed:  Resource Management         - Pump FIVE Fixed
+00:01:16.9          Recording Interval Triggered: Tracking 
+00:01:20.0      17  Event Processed:  Communications              - COM TWO OWN Ship
+00:01:24.4          Subject Response: Communications              - COM TWO
+00:01:27.6          Subject Response: Communications              - FREQ Decimal
+00:01:28.2          Subject Response: Communications              - Enter Button Selected
+00:01:30.0          Recording Interval Triggered: Resource Management
+00:01:31.0      18  Event Processed:  System Monitoring           - Scale TWO
+00:01:32.0          Recording Interval Triggered: Tracking 
+00:01:35.1          Subject Response: System Monitoring           - Scale TWO
+00:01:45.0      19  Event Processed:  Communications              - NAV ONE OWN Ship
+00:01:46.9          Recording Interval Triggered: Tracking 
+00:01:49.9          Subject Response: Communications              - NAV ONE
+00:01:51.0          Subject Response: Communications              - FREQ Integer
+00:01:52.1          Subject Response: Communications              - FREQ Decimal
+00:01:52.4          Subject Response: Communications              - FREQ Decimal
+00:01:53.4          Subject Response: Communications              - Enter Button Selected
+00:02:00.0      20  Event Processed:  Scheduling                  - TRACK in Auto Mode
+00:02:00.0          Recording Interval Triggered: Resource Management
+00:02:10.0      21  Event Processed:  System Monitoring           - GREEN Light
+00:02:13.3          Subject Response: System Monitoring           - GREEN Light
+00:02:15.1          Subject Response: System Monitoring           - RED Response Inappropriate
+00:02:20.0      22  Event Processed:  Communications              - NAV TWO OTHER Ship
+00:02:20.5      23  Event Processed:  Resource Management         - Pump EIGHT Failed
+00:02:22.6          Subject Response: Resource Management         - Pump EIGHT Response Inappropriate
+00:02:30.0      24  Event Processed:  Scheduling                  - COMM Session Ended
+00:02:30.0          Recording Interval Triggered: Resource Management
+00:02:33.0      25  Event Processed:  System Monitoring           - Scale THREE
+00:02:36.6          Subject Response: System Monitoring           - Scale THREE
+00:02:40.0      26  Event Processed:  Workload Rating Scale
+00:02:40.0          Event Terminated: Workload Rating Scale

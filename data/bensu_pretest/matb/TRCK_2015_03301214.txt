@@ -1,0 +1,26 @@
+# 03-30-2015     12:16:23     TRCK_2015_03301214.txt
+#
+# Events Filename: MATB_EVENTS.xml
+#
+# RMSD-C is the Root Mean Square Deviation from the Center Point in Pixel Units 
+#
+#  The Absolute Value of the Vertical Pixel and Horizontal Pixel 
+#  offsets from the Center Point are added and the sum squared
+#
+# SS = Sum Of Squares; NUM = Number of Samples
+# RMSD-C = Square Root (SS / NUM)
+#
+# TU = Target Update Rate; JR = Joystick Response Rate
+#
+# Recording Interval is 10 seconds
+#
+#                                     THIS INTERVAL                         SESSION AGGREGATE                         RUN AGGREGATE
+#-ELAPSED TIME  -SESSION TIME  -NUM   -SUM OF SQUARES  -RMSD-C       -NUM   -SUM OF SQUARES  -RMSD-C       -NUM       -SUM OF SQUARES   -RMSD-C          -Remarks
+#-------------------------------------------------------------------------------------------------------
+ 00:00:17.0     00:15          276      171,552         24.931        276       171,552       24.931         276             171,552      24.931          Begin: TU: HIGH, JR: MEDIUM
+ 00:00:31.9     00:30          274      705,004         50.725        550       876,556       39.922         550             876,556      39.922          
+ 00:00:47.0     00:45          276      283,824         32.068        826     1,160,380       37.481         826           1,160,380      37.481          
+ 00:01:02.0     01:00          274    1,137,326         64.427       1100     2,297,706       45.704        1100           2,297,706      45.704          
+ 00:01:16.9     01:15          274      348,089         35.643       1374     2,645,795       43.882        1374           2,645,795      43.882          
+ 00:01:32.0     01:30          276      427,776         39.369       1650     3,073,571       43.160        1650           3,073,571      43.160          
+ 00:01:46.9     01:45          274      164,646         24.513       1924     3,238,217       41.025        1924           3,238,217      41.025          

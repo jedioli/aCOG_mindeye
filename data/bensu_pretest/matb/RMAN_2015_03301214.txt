@@ -1,0 +1,37 @@
+# 03-30-2015     12:16:23     RMAN_2015_03301214.txt
+#
+# Events Filename: MATB_EVENTS.xml
+#
+# Pump Flow Rates in Units Per Minute
+# Pump 1 = 500   Pump 2 = 500   Pump 3 = 500   Pump 4 = 500
+# Pump 5 = 500   Pump 6 = 500   Pump 7 = 500   Pump 8 = 500
+#
+# Tank Consumption Rates in Units Per Minute
+# Tank A = 0   Tank B = 0
+#
+# Recording Interval is 30 seconds
+#
+# N = Recording trigged by a pump action 
+# Y = Recording trigged by a timer, and not a pump action 
+#
+# DIFF A = Amount above or below the tank A target volumn of 2500 units
+# DIFF B = Amount above or below the tank B target volumn of 2500 units
+#
+#-ELAPSED TIME   -PUMP # -PUMP ACTION -TANK UPDATE  -TANK A  -TANK B  -TANK C  -TANK D  -DIFF A  -DIFF B
+#-------------------------------------------------------------------------------------------------------
+ 00:00:05.0       1       Fail         N             2448     2448     1000     1000     -52      -52   
+ 00:00:30.0                            Y             2123     2123     1000     1000    -377     -377   
+ 00:00:35.0       1       Fix          N             2058     2058     1000     1000    -442     -442   
+ 00:00:44.4       1       On           N             1928     1928     1000     1000    -572     -572   
+ 00:00:45.0       5       Fail         N             1928     1928     1000     1000    -572     -572   
+ 00:00:59.7       2       On           N             1928     1733      805     1000    -572     -767   
+ 00:01:00.0                            Y             1928     1733      805     1000    -572     -767   
+ 00:01:01.4       1       Off          N             1948     1707      779     1000    -552     -793   
+ 00:01:04.0       3       On           N             1939     1668      779     1000    -561     -832   
+ 00:01:04.4       4       On           N             1939     1668      779     1000    -561     -832   
+ 00:01:15.0       5       Fix          N             1909     1768      779      870    -591     -732   
+ 00:01:30.0                            Y             1864     1918      779      675    -636     -582   
+ 00:01:40.8       3       Off          N             1831     2028      779      532    -669     -472   
+ 00:02:00.0                            Y             1774     1971      779      532    -726     -529   
+ 00:02:20.5       8       Fail         N             1711     1908      779      532    -789     -592   
+ 00:02:30.0                            Y             1684     1881      779      532    -816     -619   

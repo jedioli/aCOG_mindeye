@@ -1,0 +1,17 @@
+# 03-30-2015     12:16:23     COMM_2015_03301214.txt
+#
+# Events Filename: MATB_EVENTS.xml
+#
+# Timeout (in seconds) = 30
+#
+# RT = Response Time (in seconds)
+#
+# _T = Target, _S = Selected
+# R_ = Radio,  F_ = Frequency
+#
+#-TIME-      -RT-    -SHIP-  -RADIO_T-  -FREQ_T-  -RADIO_S-  -FREQ_S_  -R_OK-   -F_OK-   -REMARKS-
+#-------------------------------------------------------------------------------------------------------
+ 00:00:40.0                                                                              - Event Timer Reset
+ 00:00:51.2  04.0     OWN     COM1       127.550   COM1       127.550   True     True     
+ 00:01:28.2  01.0     OWN     COM2       126.475   COM2       126.475   True     True     
+ 00:01:53.4  01.1     OWN     NAV1       111.600   NAV1       111.600   True     True     
