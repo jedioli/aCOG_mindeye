@@ -25,23 +25,41 @@ import csv
 
 
 class Recorder(Thread):
-    def __init__(self, fn, queue):
+    def __init__(self, fn, queue, signal):
         super(Recorder, self).__init__()
         self.filename = fn
         self.pupil_data = queue   # this is a thread-safe Queue, it just holds onto the reference
         self.begin = False
         print 'inited'
+        self.sig_listen = signal
         
     def run(self):
-        while not self.begin:
-        #    print 'waiting'
+        '''
+    #    while not self.begin:
+    #    #    print 'waiting'
+    #        pass
+        while self.sig_listen.empty():
             pass
-        else:
-            print 'ready'
-            self.tofile()
+        signal = self.sig_listen.get()
+    #    while signal[0] is not "record":
+    #        self.pupil_signal.put(signal)
+    #        signal = self.pupil_signal.get()
+    #    else:
+        print 'ready to print'
+        self.tofile()
         #    print 'data has ' + str(self.data.qsize()) + ' items in it'     # use qsize() for approx size of queue
-            print "data output"
-            return
+        print "data is output"
+        return
+        '''
+        
+        while self.sig_listen.empty():
+            pass
+        signal = self.sig_listen.get()
+        print 'ready to print'
+        self.tofile()
+        print "data is output"
+        return
+        
     
     def ready(self):        # set when all data has been collected
         self.begin = True

@@ -11,7 +11,7 @@
 
 import zmq
 from threading import Thread
-import Queue    #for thread-safe message sending, to workload and to record.
+import Queue    # for thread-safe message sending, to workload and to record.
 
 
 # RESOURCES
@@ -28,7 +28,7 @@ import Queue    #for thread-safe message sending, to workload and to record.
 
 
 class Listener(Thread):
-    def __init__(self, queue):
+    def __init__(self, queue, remote_sig, record_sig):
         super(Listener, self).__init__()
         data_port = "5000"
         self.context = zmq.Context()
@@ -36,16 +36,64 @@ class Listener(Thread):
         self.socket.connect("tcp://127.0.0.1:" + data_port)
         self.socket.setsockopt(zmq.SUBSCRIBE, '')
         self.pupil_data = queue
-        self.ready = True
+        self.sig_remote = remote_sig
+        self.sig_record = record_sig
+#        self.ready = True
         self.put_counter = 0
     
-    def stop(self):
-        self.ready = False
+#    def begin(self):
+#        self.ready = True        
+#    def stop(self):
+#        self.ready = False
     
     def run(self):
-        while self.ready:
+        '''
+    #    signal = (" ", " ")
+        while self.sig_remote.empty():    # wait for starting signal from remote
+            pass
+    #    signal = self.pupil_signal.get()             # clear signal
+    #    while signal[0] is not "listen":
+    #        self.pupil_signal.put(signal)
+    #        signal = self.pupil_signal.get()
+    #    signal = (" ", " ")
+        signal = self.sig_remote.get()
+        print "starting to listen"
+    #    while self.ready:
+        while self.sig_remote.empty():
             self.listen()
+    #    self.pupil_signal.get()
+    #    signal = self.pupil_signal.get()
+    #    while signal[0] is not "listen":
+    #        self.pupil_signal.put(signal)
+    #        signal = self.pupil_signal.get()
+        '''
+    
+        while self.sig_remote.empty():    # wait for starting signal from remote
+            pass
+        signal = self.sig_remote.get()
+        
+        recording = False
+    #    print "---------- SIGNAL: " + str(signal)
+        
+        while signal[1] != 'finish':                    # 'is' IS IDENTITY TESTING! NOT equality testing!
+            if signal[1] == 'toggle' and not recording:
+                print "starting to listen"
+                recording = True
+                while self.sig_remote.empty():
+                    self.listen()
+            elif signal[1] == 'toggle' and recording:
+                print "stopping to listen"
+                recording = False
+                while self.sig_remote.empty():
+                    pass
+            signal = self.sig_remote.get()
+                
+        
+        
+    
+    
         print "done listening: " + str(self.put_counter) + " events"
+        self.sig_record.put(("record","start"))
         return
     
     def listen(self):
@@ -107,34 +155,57 @@ class Listener(Thread):
 
 
 class Remote(Thread):
-    def __init__(self):
+    def __init__(self, signal):
         super(Remote, self).__init__()
         remote_port = '50020'
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
         self.socket.connect("tcp://localhost:" + remote_port)
+        self.sig_listen = signal
+        self.toggle_count = 0
     
     def run(self):
-        self.notify()
-    
-    def notify(self):
+#        while self.toggle_count < 2:
         while True:
             try:
-                print "Please input a command to send."
+                print "Please input a remote command to send."
                 cmd = raw_input("cmd? > ")
-                print cmd
+            #    print cmd
+            except EOFError:
+                print "Thank you! Terminating..."
+                self.sig_listen.put(('listen','finish'))
+                break
+            if cmd != 'R':
+                print "Thank you! Terminating..."
+                self.sig_listen.put(('listen','finish'))
+                break
+            self.notify(cmd)
+        return
+    
+    def notify(self, cmd):
+    #    while True:
+            '''
+            try:
+                print "Please input a remote command to send."
+                cmd = raw_input("cmd? > ")
+            #    print cmd
             except EOFError:
                 print
                 print "Thank you! Terminating..."
                 print
                 return
-            #relay to pupil remote.
+            # relay to pupil remote.
+            '''
             result = self.socket.send(cmd)
+            if cmd == 'R':
+                self.sig_listen.put(('listen','toggle'))
+                self.toggle_count += 1
             if result is None:
                 print "great!"
             else:
                 print "broke"
             try:
+                print "waiting confirmation"
                 confirm = self.socket.recv()
                 print confirm
             except zmq.ZMQError:

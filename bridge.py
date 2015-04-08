@@ -8,13 +8,13 @@
  ---------------------------------- (O)<< ----------------------------------------------
 """
 
-import subprocess, os
+import subprocess, os, sys
 #import multiprocessing
 import threading
 from Queue import Queue
 import time     # mainly for debugging purposes
 
-import pupilsssss   # HEY! LISTEN! be sure you record VIDEO while doing this!
+import pupil    # HEY! LISTEN! be sure you record VIDEO while doing this!
 import record
 
 
@@ -55,50 +55,66 @@ def start_pupil():
 
 
 if __name__ == '__main__':
-    
-#    start_pupil()
-    
+    if len(sys.argv) < 2:
+        print "\nPlease include an output file name!"
+        exit()
+
     starter = threading.Thread(name='starter', target=start_pupil)
     starter.setDaemon(False)
     starter.start()
     
-    time.sleep(20)
+    time.sleep(10)
     
     pupil_data = Queue()
+#    pupil_signal = Queue()
+    sig_remote_listen = Queue()     # for message passing between remote <-> listener
+    sig_listen_record = Queue()     # for message passing between recorder <-> listener
     
-    cmd = raw_input("Enter a char when ready. > ")
+    cmd = raw_input("listener/remote gate. > ")
     if cmd:
+        print "correct main"
         pass
     else:
         print "else branch of cmd"
         pass
     
     # Need to be sure to start recording camera frames as well
+    # Signals didn't work... :/
+    #   Used a separate signal queue for each connection: seems easier that way.
     
-    ear = pupil.Listener(pupil_data)
+    ear = pupil.Listener(pupil_data, remote_sig=sig_remote_listen, record_sig=sig_listen_record)
     ear.setDaemon(False)
     ear.start()
     
-    '''
-    mouth = pupil.Remote()
+    
+    mouth = pupil.Remote(sig_remote_listen)
     mouth.setDaemon(False)
     mouth.start()
-    '''
     
-    scribe = record.Recorder('test_w_tracker_matb.csv', pupil_data)
+  
+#    ear.begin()
+    
+#    scribe = record.Recorder('integrated_test.csv', pupil_data, sig_listen_record)
+    scribe = record.Recorder(sys.argv[1], pupil_data, sig_listen_record)
     scribe.setDaemon(False)
     scribe.start()
     
-    time.sleep(10)
-    cmd = raw_input("Enter a char when finished. > ")
+    time.sleep(5)
+
+    '''
+    cmd = raw_input("scribe start gate. > ")
     if cmd:
-        ear.stop()
-        scribe.ready()
+#        ear.stop()
+#        scribe.ready()
+        pass
     else:
         print "else branch of cmd"
-        ear.stop()
-        scribe.ready()
+#        ear.stop()
+#        scribe.ready()
     
+    scribe.ready()
+    '''
+
     print "all done with bridge"
     
     '''
@@ -121,12 +137,20 @@ if __name__ == '__main__':
     
     scribe.ready()
     '''
+
+
+    """
+    # Remote test
+    mouth = pupil.Remote(pupil_signal)
+    mouth.setDaemon(False)
+    mouth.start()
+    """
     
-    
+#    thread.join()
     
     
 #    ear.daemon = False
 #    mouth.daemon = False
-    
 #    ear.start()
 #    mouth.start()
+    
