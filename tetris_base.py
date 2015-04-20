@@ -2,6 +2,13 @@
 """
 Tetris Tk - A tetris clone written in Python using the Tkinter GUI library.
 
+from: http://code.google.com/p/tetris-tk/
+modified by: team aCOG - TAMU CSCE 481 Senior Design
+                 Sara Fox
+                 Oliver Hatfield
+				 Ben Sitz
+				 Ben Sullivan
+
 Controls:
     Left Arrow      Move left
     Right Arrow     Move right
@@ -10,6 +17,7 @@ Controls:
     'a'             Rotate anti-clockwise (to the left)
     'b'             Rotate clockwise (to the right)
     'p'             Pause the game.
+	
 """
 
 from Tkinter import *
