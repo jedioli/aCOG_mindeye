@@ -12,10 +12,10 @@ modified by: team aCOG - TAMU CSCE 481 Senior Design
 Controls:
     Left Arrow      Move left
     Right Arrow     Move right
-    Down Arrow      Move down
-    Up Arrow        Drop Tetronimoe to the bottom
+    Down Arrow      Soft drop
+    Up Arrow        Hard drop
     'a'             Rotate anti-clockwise (to the left)
-    'b'             Rotate clockwise (to the right)
+    's'             Rotate clockwise (to the right)
     'p'             Pause the game.
 	
 """
@@ -474,7 +474,7 @@ class game_controller(object):
                         )
                     Toplevel().destroy()
                     self.parent.destroy()
-                    sys.exit(0)
+                #    sys.exit(0)
                 
                 # do we go up a level?
                 if (self.level < NO_OF_LEVELS and 
