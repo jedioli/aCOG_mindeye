@@ -1,0 +1,22 @@
+filename = 'bensi_long_multi.csv';
+M = csvread(filename,1,0);
+[cols,rows] = size(M);
+start = M(1,1);
+for index = 1 : cols
+    M(index,1) = M(index,1) - start;  %subscripts are row, col
+    if M(index,2) < 0.75
+       M(index,3) = NaN;
+    end
+end
+
+D = [[120],
+     [120.05],
+     [420],
+     [420.05],
+     [720],
+     [720.05],
+     [120],
+     [120.05],
+     [420],];
+
+plot(M(:,1), M(:,3));
