@@ -29,7 +29,7 @@ import sys
 SCALE = 20
 OFFSET = 3
 MAXX = 10
-MAXY = 22
+MAXY = 32
 
 NO_OF_LEVELS = 10
 
@@ -45,7 +45,7 @@ def level_thresholds( first_level, no_of_levels ):
     """
     thresholds =[]
     for x in xrange( no_of_levels ):
-        multiplier = 2**x
+        multiplier = 2**(x)
         thresholds.append( first_level * multiplier )
     
     return thresholds
@@ -87,13 +87,53 @@ class Board( Frame ):
         self.scale = scale
         self.max_x = max_x
         self.max_y = max_y
-        self.offset = offset        
+        self.offset = offset   
+        
+        self.active = False     # added by OH
 
         self.canvas = Canvas(parent,
                              height=(max_y * scale)+offset,
                              width= (max_x * scale)+offset)
+        self.canvas.config(background="gray43")
         self.canvas.pack()
 
+    # ----------------- additions by OH ---------------------
+    '''
+    def active_window(self, bool):
+        self.active = bool
+        
+        if not self.active:
+            self.canvas.config(background="gray43")
+        else:
+            self.canvas.config(background="mint cream")
+    '''
+    
+    def clear_board(self):
+    #    self.landed.clear()
+        
+        '''
+        kill_blocks = []
+        for block_coord in self.landed:
+            kill_blocks.append(self.landed[block_coord])
+        self.landed.clear()
+        while not kill_blocks:
+            block = kill_blocks.pop()
+            self.delete_block(block)
+            del block
+        '''
+        
+        while self.landed:
+        #    print "len pre pop" + str(len(self.landed))
+            block_coords, block_id = self.landed.popitem()
+        #    print "len postpop" + str(len(self.landed))
+            self.delete_block(block_id)
+            del block_id
+        
+        print "cleared"
+        print str(len(self.landed))
+    
+    # ------------------ end additions ----------------------
+    
     def check_for_complete_row( self, blocks ):
         """
         Look for a complete row of blocks, from the bottom up until the top row
@@ -399,14 +439,15 @@ class game_controller(object):
     """
     Main game loop and receives GUI callback events for keypresses etc...
     """
-    def __init__(self, parent):
+    def __init__(self, parent, root):
         """
         Intialise the game...
         """
         self.parent = parent
+        self.root = root
         self.score = 0
         self.level = 0
-        self.delay = 1000    #ms
+        self.delay = 700    #ms
         
         #lookup table
         self.shapes = [square_shape,
@@ -444,15 +485,63 @@ class game_controller(object):
         self.parent.bind("a", self.a_callback)
         self.parent.bind("s", self.s_callback)
         self.parent.bind("p", self.p_callback)
-        
+    
         self.shape = self.get_next_shape()
         #self.board.output()
-
+    
         self.after_id = self.parent.after( self.delay, self.move_my_shape )
+    
+    # ----------------- additions by OH ---------------------
         
+        self.parent.bind("<space>", self.space_callback)
+        
+        self.parent.after(5000, self.random_rotate)
+    
+    def restart(self):
+        self.board.clear_board()
+        self.score = 0
+        self.level = 0
+        self.shape = self.get_next_shape()
+        print "restarted"
+        
+    def random_rotate(self):
+        rotate_int = randint(0,19)
+        if randint(0,1) == 0:
+            rand_bool = True
+        else:
+            rand_bool = False
+        
+        if self.shape and (   
+                rotate_int == 7
+            ):  # does (7 or 8 or 9) work?
+            self.shape.rotate(clockwise=rand_bool)
+            self.parent.after(5000, self.random_rotate)
+        else:
+            self.parent.after(100, self.random_rotate)
+    # ------------------ end additions ----------------------
+    
+    
     def handle_move(self, direction):
         #if you can't move then you've hit something
+        
+        # ----------------- additions by OH ---------------------
+        '''
+        attr = self.parent.wm_attributes('-topmost')
+        
+    #    lol = self.board.master.tk.eval('wm stackorder '+str(self.parent))
+    #    print lol
+        
+    #    print str(type(attr))
+        if attr == 1:
+            self.board.active_window(True)
+        else:
+            self.board.active_window(False)  
+        '''   
+        # ------------------ end additions ----------------------
+        
         if not self.shape.move( direction ):
+            
+            
             
             # if your heading down then the shape has 'landed'
             if direction == DOWN:
@@ -466,14 +555,19 @@ class game_controller(object):
                 # that the check before creating it failed and the
                 # game is over!
                 if self.shape is None:
-                    tkMessageBox.showwarning(
-                        title="GAME OVER",
-                        message ="Score: %7d\tLevel: %d\t" % (
-                            self.score, self.level),
-                        parent=self.parent
-                        )
-                    Toplevel().destroy()
-                    self.parent.destroy()
+                    #tkMessageBox.showwarning(
+                        #title="GAME OVER",
+                        #message ="Score: %7d\tLevel: %d\t" % (
+                            #self.score, self.level),
+                        #parent=self.parent
+                        #)
+                    #block = self.landed.pop((x,y))
+                    #self.delete_block(block)
+                    
+                    self.restart()
+                    
+                #    Toplevel().destroy()
+                #    self.parent.destroy()
                 #    sys.exit(0)
                 
                 # do we go up a level?
@@ -490,6 +584,21 @@ class game_controller(object):
                 return False
         return True
 
+# ----------------- additions by OH ---------------------
+    def space_callback(self, event):
+        self.root.focus_force()
+        self.board.canvas.config(bg="gray43")
+        
+        '''
+        self.active_game = (self.active_game + 1) % num_games
+        window = self.game_list[self.active_game][0]
+        print repr(window)
+        window.lift()
+        window.focus_force()
+        return 'break'
+        '''
+# ------------------ end additions ----------------------    
+
     def left_callback( self, event ):
         if self.shape:
             self.handle_move( LEFT )
@@ -497,16 +606,14 @@ class game_controller(object):
     def right_callback( self, event ):
         if self.shape:
             self.handle_move( RIGHT )
-
-    def up_callback( self, event ):
-        if self.shape:
-            # drop the tetrominoe to the bottom
-            while self.handle_move( DOWN ):
-                pass
-
+            
     def down_callback( self, event ):
         if self.shape:
             self.handle_move( DOWN )
+
+    def up_callback( self, event ):
+        if self.shape:
+            self.shape.rotate(clockwise=True)
             
     def a_callback( self, event):
         if self.shape:
@@ -538,8 +645,15 @@ class game_controller(object):
         
         
 if __name__ == "__main__":
-    root = Tk()
-    root.title("Tetris Tk")
-    theGame = game_controller( root )
+#    while 1:
+        root = Tk()
+        root.title("Tetris Tk")
+        theGame = game_controller( root )
     
-    root.mainloop()
+        attr = root.attributes('-topmost')
+    #    print str(type(attr))
+        if attr == 1:
+            theGame.board.active_window(True)
+        else:
+            theGame.board.active_window(False)       
+        root.mainloop()
