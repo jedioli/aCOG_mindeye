@@ -20,7 +20,7 @@ class Tetris_Switcher(object):
         self.parent = parent    # usually root
         self.num_games = num_games
         self.game_list = []
-        self.active_game = num_games-1
+        self.active_game = 0
         
     #    self.parent.bind("<space>", self.space_callback)
         self.parent.bind("<FocusIn>", self.switch_callback)
@@ -62,7 +62,13 @@ class Tetris_Switcher(object):
     def switch_callback(self, event):
     #    for game in self.game_list:
     #        game[1].board.canvas.config(bg="gray43")
+        if not self.game_list:
+            print "not yet started"
+            return
         self.active_game = (self.active_game + 1) % num_games
+        if self.active_game >= num_games:
+            print "game out of bounds error"
+            self.active_game = 0
         window, control = self.game_list[self.active_game]
     #    print repr(window)
         window.lift()
