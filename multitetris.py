@@ -30,7 +30,7 @@ class Tetris_Switcher(object):
     def start(self):
         tkMessageBox.showwarning(
             title="Controls",
-            message="left:\tmove left\nright:\tmove right\nup:\t\trotate piece\nspace:\tswitch to next game\n\nCAREFUL! pieces may randomly rotate!",
+            message="left:\t\tmove left\nright:\tmove right\nup:\t\trotate piece\nspace:\tswitch to next game\n\nCAREFUL! pieces may randomly rotate!",
             parent=self.parent
             )
         

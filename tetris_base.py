@@ -3,7 +3,7 @@
 Tetris Tk - A tetris clone written in Python using the Tkinter GUI library.
 
 from: http://code.google.com/p/tetris-tk/
-modified by: team aCOG - TAMU CSCE 481 Senior Design
+modified for use with multitetris.py by: team aCOG - TAMU CSCE 481 Senior Design
                  Sara Fox
                  Oliver Hatfield
 				 Ben Sitz
@@ -13,7 +13,8 @@ Controls:
     Left Arrow      Move left
     Right Arrow     Move right
     Down Arrow      Soft drop
-    Up Arrow        Hard drop
+    Up Arrow        # Hard drop
+                    Rotate
     'a'             Rotate anti-clockwise (to the left)
     's'             Rotate clockwise (to the right)
     'p'             Pause the game.
@@ -29,7 +30,7 @@ import sys
 SCALE = 20
 OFFSET = 3
 MAXX = 10
-MAXY = 32
+MAXY = 32   # 22 originally
 
 NO_OF_LEVELS = 10
 
@@ -88,8 +89,6 @@ class Board( Frame ):
         self.max_x = max_x
         self.max_y = max_y
         self.offset = offset   
-        
-        self.active = False     # added by OH
 
         self.canvas = Canvas(parent,
                              height=(max_y * scale)+offset,
@@ -505,14 +504,16 @@ class game_controller(object):
         print "restarted"
         
     def random_rotate(self):
-        rotate_int = randint(0,19)
+        rotate_int = randint(1,100)
         if randint(0,1) == 0:
             rand_bool = True
         else:
             rand_bool = False
         
         if self.shape and (   
-                rotate_int == 7
+                rotate_int == 7 or
+                rotate_int == 9 or
+                rotate_int == 8
             ):  # does (7 or 8 or 9) work?
             self.shape.rotate(clockwise=rand_bool)
             self.parent.after(5000, self.random_rotate)
@@ -523,26 +524,8 @@ class game_controller(object):
     
     def handle_move(self, direction):
         #if you can't move then you've hit something
-        
-        # ----------------- additions by OH ---------------------
-        '''
-        attr = self.parent.wm_attributes('-topmost')
-        
-    #    lol = self.board.master.tk.eval('wm stackorder '+str(self.parent))
-    #    print lol
-        
-    #    print str(type(attr))
-        if attr == 1:
-            self.board.active_window(True)
-        else:
-            self.board.active_window(False)  
-        '''   
-        # ------------------ end additions ----------------------
-        
         if not self.shape.move( direction ):
-            
-            
-            
+        
             # if your heading down then the shape has 'landed'
             if direction == DOWN:
                 self.score += self.board.check_for_complete_row(
@@ -555,14 +538,14 @@ class game_controller(object):
                 # that the check before creating it failed and the
                 # game is over!
                 if self.shape is None:
-                    #tkMessageBox.showwarning(
-                        #title="GAME OVER",
-                        #message ="Score: %7d\tLevel: %d\t" % (
-                            #self.score, self.level),
-                        #parent=self.parent
-                        #)
-                    #block = self.landed.pop((x,y))
-                    #self.delete_block(block)
+                #    tkMessageBox.showwarning(
+                    #    title="GAME OVER",
+                    #    message ="Score: %7d\tLevel: %d\t" % (
+                        #    self.score, self.level),
+                    #    parent=self.parent
+                    #    )
+                #    block = self.landed.pop((x,y))
+                #    self.delete_block(block)
                     
                     self.restart()
                     
@@ -646,14 +629,8 @@ class game_controller(object):
         
 if __name__ == "__main__":
 #    while 1:
-        root = Tk()
-        root.title("Tetris Tk")
-        theGame = game_controller( root )
+    root = Tk()
+    root.title("Tetris Tk")
+    theGame = game_controller( root )
     
-        attr = root.attributes('-topmost')
-    #    print str(type(attr))
-        if attr == 1:
-            theGame.board.active_window(True)
-        else:
-            theGame.board.active_window(False)       
-        root.mainloop()
+    root.mainloop()
