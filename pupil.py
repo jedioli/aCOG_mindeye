@@ -13,6 +13,7 @@ import zmq
 from threading import Thread
 import Queue    # for thread-safe message sending, to workload and to record.
 
+import sys
 
 # RESOURCES
 #   http://stackoverflow.com/questions/2846653/python-multithreading-for-dummies
@@ -104,6 +105,7 @@ class Listener(Thread):
         data_dict = dict([i.split(':') for i in items[:-1] ])
     
         if msg_type == 'Pupil':
+            print data_msg
             self.pupil_data.put(data_dict)
             self.put_counter += 1
         else:
@@ -168,18 +170,20 @@ class Remote(Thread):
 #        while self.toggle_count < 2:
         while True:
             try:
-                print "Please input a remote command to send."
-                cmd = raw_input("cmd? > ")
-            #    print cmd
+                print "Please input a remote command to send..."
+            #    cmd = raw_input("cmd? > ")             # causes crashes in Tk
+                cmd = sys.stdin.readline()
+                print "command is " + cmd
+                print str(type(cmd))
             except EOFError:
                 print "Thank you! Terminating..."
                 self.sig_listen.put(('listen','finish'))
                 break
-            if cmd != 'R':
+            if cmd[0] != 'R':   # need to get the first letter with stdin, since captures \n
                 print "Thank you! Terminating..."
                 self.sig_listen.put(('listen','finish'))
                 break
-            self.notify(cmd)
+            self.notify(cmd[0])
         return
     
     def notify(self, cmd):

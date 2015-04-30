@@ -30,11 +30,11 @@ class Tetris_Switcher(object):
     def start(self):
         tkMessageBox.showwarning(
             title="Controls",
-            message="left:\t\tmove left\nright:\tmove right\nup:\t\trotate piece\nspace:\tswitch to next game\n\nCAREFUL! pieces may randomly rotate!",
+            message="left:\t\tmove left\nright:\tmove right\nup:\t\trotate piece\ndown:\tdrop faster\nspace:\tswitch to next game\n\nCAREFUL! pieces may randomly rotate!",
             parent=self.parent
             )
         
-        for x in range(num_games):
+        for x in range(self.num_games):
             window = tk.Toplevel(self.parent)
             window.title("Tetris Tk" + str(x+1))
             control = tetris_base.game_controller( window , self.parent)
@@ -65,8 +65,8 @@ class Tetris_Switcher(object):
         if not self.game_list:
             print "not yet started"
             return
-        self.active_game = (self.active_game + 1) % num_games
-        if self.active_game >= num_games:
+        self.active_game = (self.active_game + 1) % self.num_games
+        if self.active_game >= self.num_games:
             print "game out of bounds error"
             self.active_game = 0
         window, control = self.game_list[self.active_game]
@@ -110,5 +110,3 @@ if __name__ == "__main__":
     for game in game_list:
         game[0].mainloop()
     '''
-    
-    print "ready"
