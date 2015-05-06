@@ -12,4 +12,4 @@
 # NOTES:
 #   I'm still not completely sure how to use packages. so look into this please.
 
-    __all__ = ['bridge', 'pupil', 'record', 'workload', 'cog_task']
+    __all__ = ['bridge', 'pupil', 'record', 'workload', 'cog_task', 'tetris_base', 'multitetris']

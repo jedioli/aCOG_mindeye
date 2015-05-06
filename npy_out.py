@@ -5,6 +5,10 @@
 
  npy_out.py
 
+    Used to convert .npy files output by Pupil Capture to .csv files
+    
+ DEPENDENCIES:
+    numpy   -   NumPy Python library
  ---------------------------------- (O)<< ----------------------------------------------
 """
 
@@ -16,21 +20,19 @@
 #   http://stackoverflow.com/questions/12223167/adding-header-to-numpy-array
 
 
+
 import os, sys
 import numpy
 
 
-
-
 if len(sys.argv) < 3:
-    print "\nPlease include the path to a NumPy data file, and the output file name, as command line arguments."
+    print "\nPlease include the path to a NumPy data file, and the output file name (.csv), as command line arguments."
     exit()
 
 
 path = os.path.abspath(sys.argv[1])
 pupil_data = numpy.load(path)
 
-#   output_file = "junkyjunk.csv"
 output_file = sys.argv[2]
 
 print "data ready"
@@ -42,7 +44,7 @@ if len(pupil_data.shape) == 1:
     numpy.savetxt(output_file, pupil_data, delimiter=",", header=top)
     exit()
     
-print "num cols = " + str(pupil_data.shape[1])
+print "num data columns = " + str(pupil_data.shape[1])
 
 select_data = pupil_data[:, [0, 1, 5]]
 top_head = 'timestamp, confidence, diameter'

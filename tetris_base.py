@@ -1,25 +1,31 @@
-#!/usr/bin/env python
 """
 Tetris Tk - A tetris clone written in Python using the Tkinter GUI library.
-
-from: http://code.google.com/p/tetris-tk/
-modified for use with multitetris.py by: team aCOG - TAMU CSCE 481 Senior Design
-                 Sara Fox
-                 Oliver Hatfield
-				 Ben Sitz
-				 Ben Sullivan
 
 Controls:
     Left Arrow      Move left
     Right Arrow     Move right
     Down Arrow      Soft drop
     Up Arrow        # Hard drop
-                    Rotate
     'a'             Rotate anti-clockwise (to the left)
     's'             Rotate clockwise (to the right)
     'p'             Pause the game.
 	
 """
+"""
+ Modified for use with multitetris.py by: 
+ ---------------------------------- (O)<< ----------------------------------------------
+ aCOG - Beyond the Mind's Eye
+ Oliver Hatfield, Sara Fox, Benjamin Sitz, Benjamin Sullivan
+
+ original source found at: http://code.google.com/p/tetris-tk/
+ 
+ Modified controls:
+    Up arrow:   Rotate clockwise
+    Space:      Change to next game in sequence
+                (when used with Multi-Tetris)
+ ---------------------------------- (O)<< ----------------------------------------------
+"""
+
 
 from Tkinter import *
 from time import sleep
@@ -97,39 +103,15 @@ class Board( Frame ):
         self.canvas.pack()
 
     # ----------------- additions by OH ---------------------
-    '''
-    def active_window(self, bool):
-        self.active = bool
-        
-        if not self.active:
-            self.canvas.config(background="gray43")
-        else:
-            self.canvas.config(background="mint cream")
-    '''
     
     def clear_board(self):
-    #    self.landed.clear()
-        
-        '''
-        kill_blocks = []
-        for block_coord in self.landed:
-            kill_blocks.append(self.landed[block_coord])
-        self.landed.clear()
-        while not kill_blocks:
-            block = kill_blocks.pop()
-            self.delete_block(block)
-            del block
-        '''
-        
+        # called by Board.restart()    
         while self.landed:
-        #    print "len pre pop" + str(len(self.landed))
             block_coords, block_id = self.landed.popitem()
-        #    print "len postpop" + str(len(self.landed))
             self.delete_block(block_id)
             del block_id
         
-        print "cleared"
-        print str(len(self.landed))
+        return "board cleared"
     
     # ------------------ end additions ----------------------
     
@@ -497,11 +479,12 @@ class game_controller(object):
         self.parent.after(5000, self.random_rotate)
     
     def restart(self):
-        self.board.clear_board()
+        status = self.board.clear_board()
         self.score = 0
         self.level = 0
+        self.delay = 700
         self.shape = self.get_next_shape()
-        print "restarted"
+        print status + " and restarted"
         
     def random_rotate(self):
         rotate_int = randint(1,100)
@@ -538,20 +521,21 @@ class game_controller(object):
                 # that the check before creating it failed and the
                 # game is over!
                 if self.shape is None:
-                #    tkMessageBox.showwarning(
-                    #    title="GAME OVER",
-                    #    message ="Score: %7d\tLevel: %d\t" % (
-                        #    self.score, self.level),
-                    #    parent=self.parent
-                    #    )
-                #    block = self.landed.pop((x,y))
-                #    self.delete_block(block)
-                    
+    # ----------------- additions by OH ---------------------
+                    """
+                    tkMessageBox.showwarning(
+                        title="GAME OVER",
+                        message ="Score: %7d\tLevel: %d\t" % (
+                            self.score, self.level),
+                        parent=self.parent
+                        )
+                    Toplevel().destroy()
+                    self.parent.destroy()
+                    sys.exit(0)
+                    """
+                               
                     self.restart()
-                    
-                #    Toplevel().destroy()
-                #    self.parent.destroy()
-                #    sys.exit(0)
+    # ------------------ end additions ----------------------  
                 
                 # do we go up a level?
                 if (self.level < NO_OF_LEVELS and 
@@ -567,20 +551,11 @@ class game_controller(object):
                 return False
         return True
 
-# ----------------- additions by OH ---------------------
+    # ----------------- additions by OH ---------------------
     def space_callback(self, event):
         self.root.focus_force()
         self.board.canvas.config(bg="gray43")
-        
-        '''
-        self.active_game = (self.active_game + 1) % num_games
-        window = self.game_list[self.active_game][0]
-        print repr(window)
-        window.lift()
-        window.focus_force()
-        return 'break'
-        '''
-# ------------------ end additions ----------------------    
+    # ------------------ end additions ----------------------    
 
     def left_callback( self, event ):
         if self.shape:
@@ -628,7 +603,6 @@ class game_controller(object):
         
         
 if __name__ == "__main__":
-#    while 1:
     root = Tk()
     root.title("Tetris Tk")
     theGame = game_controller( root )

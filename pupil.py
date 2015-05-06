@@ -5,13 +5,20 @@
 
  pupil.py
 
+    Used to monitor data stream, send commands to Pupil Capture via ZeroMQ-TCP
+    Contains Listener and Remote classes
+    Integrates with bridge.py, record.py
+    Network connections (localhost) specifically tuned to Pupil Capture Server module
+    
+ DEPENDENCIES:
+    zmq     -   ZeroMQ network library (Python bindings)
  ---------------------------------- (O)<< ----------------------------------------------
 """
 
 
 import zmq
 from threading import Thread
-import Queue    # for thread-safe message sending, to workload and to record.
+import Queue    # for thread-safe message passing, to workload.py and to record.py
 
 import sys
 
@@ -20,12 +27,6 @@ import sys
 #   https://docs.python.org/2/library/multiprocessing.html
 
 
-# NOTES:
-#   I think for now I'm just going to use threading, and only move to multiprocessing if I run into trouble.
-
-
-# QUESTIONS
-#   should I derive Thread/Process? or just make functions that threads would target?
 
 
 class Listener(Thread):
@@ -39,44 +40,17 @@ class Listener(Thread):
         self.pupil_data = queue
         self.sig_remote = remote_sig
         self.sig_record = record_sig
-#        self.ready = True
         self.put_counter = 0
     
-#    def begin(self):
-#        self.ready = True        
-#    def stop(self):
-#        self.ready = False
     
     def run(self):
-        '''
-    #    signal = (" ", " ")
-        while self.sig_remote.empty():    # wait for starting signal from remote
-            pass
-    #    signal = self.pupil_signal.get()             # clear signal
-    #    while signal[0] is not "listen":
-    #        self.pupil_signal.put(signal)
-    #        signal = self.pupil_signal.get()
-    #    signal = (" ", " ")
-        signal = self.sig_remote.get()
-        print "starting to listen"
-    #    while self.ready:
-        while self.sig_remote.empty():
-            self.listen()
-    #    self.pupil_signal.get()
-    #    signal = self.pupil_signal.get()
-    #    while signal[0] is not "listen":
-    #        self.pupil_signal.put(signal)
-    #        signal = self.pupil_signal.get()
-        '''
-    
         while self.sig_remote.empty():    # wait for starting signal from remote
             pass
         signal = self.sig_remote.get()
         
         recording = False
-    #    print "---------- SIGNAL: " + str(signal)
         
-        while signal[1] != 'finish':                    # 'is' IS IDENTITY TESTING! NOT equality testing!
+        while signal[1] != 'finish':
             if signal[1] == 'toggle' and not recording:
                 print "starting to listen"
                 recording = True
@@ -89,13 +63,10 @@ class Listener(Thread):
                     pass
             signal = self.sig_remote.get()
                 
-        
-        
-    
-    
         print "done listening: " + str(self.put_counter) + " events"
         self.sig_record.put(("record","start"))
         return
+    
     
     def listen(self):
         data_msg = self.socket.recv()
@@ -105,52 +76,13 @@ class Listener(Thread):
         data_dict = dict([i.split(':') for i in items[:-1] ])
     
         if msg_type == 'Pupil':
-            print data_msg
+        #    print data_msg         # uncomment this to stream data to the console
             self.pupil_data.put(data_dict)
             self.put_counter += 1
         else:
-            # process non gaze position events from plugins here\
-            # These are all "Gaze" events, but only ever lists timestamp and confidence. Not sure what it's for.
+            # these are all "Gaze" events, but only ever lists timestamp and confidence.
+            #   unused in aCOG_mindeye.
             pass
-        
-        """
-        while self.put_counter < 50:        # collecting 50 frames for testing
-            data_msg = self.socket.recv()
-
-            items = data_msg.split("\n") 
-            msg_type = items.pop(0)
-            data_dict = dict([i.split(':') for i in items[:-1] ])
-    
-            if msg_type == 'Pupil':
-                self.pupil_data.put(data_dict)
-                self.put_counter += 1
-                
-                '''
-                print "raw msg:\n", data_msg
-                try:
-                    s = ""
-                    for key in data_dict:
-                        s += str(key) + " "
-    
-                print "keys are: " + s
-                #they are: "norm_pos confidence id timestamp diameter"
-                print "norm_gaze: ", items['norm_gaze']
-
-                except KeyError:
-                    pass
-                '''
-            else:
-                # process non gaze position events from plugins here\
-                # These are all "Gaze" events, but only ever lists timestamp and confidence. Not sure what it's for.
-                '''
-                print "not Pupil data: " + str(msg_type)
-                list = []
-                for key in data_dict:
-                    list.append(key)
-                print list
-                '''
-                pass
-        """
         pass
 
 
@@ -167,14 +99,11 @@ class Remote(Thread):
         self.toggle_count = 0
     
     def run(self):
-#        while self.toggle_count < 2:
         while True:
             try:
                 print "Please input a remote command to send..."
             #    cmd = raw_input("cmd? > ")             # causes crashes in Tk
                 cmd = sys.stdin.readline()
-                print "command is " + cmd
-                print str(type(cmd))
             except EOFError:
                 print "Thank you! Terminating..."
                 self.sig_listen.put(('listen','finish'))
@@ -187,32 +116,19 @@ class Remote(Thread):
         return
     
     def notify(self, cmd):
-    #    while True:
-            '''
-            try:
-                print "Please input a remote command to send."
-                cmd = raw_input("cmd? > ")
-            #    print cmd
-            except EOFError:
-                print
-                print "Thank you! Terminating..."
-                print
-                return
-            # relay to pupil remote.
-            '''
             result = self.socket.send(cmd)
             if cmd == 'R':
                 self.sig_listen.put(('listen','toggle'))
                 self.toggle_count += 1
             if result is None:
-                print "great!"
+                print "command sent!"
             else:
-                print "broke"
+                print "command not sent"
             try:
                 print "waiting confirmation"
                 confirm = self.socket.recv()
                 print confirm
             except zmq.ZMQError:
                 confirm = None
-                print "erk"
+                print "zeroMQ error"
 
