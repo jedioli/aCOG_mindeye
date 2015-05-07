@@ -25,8 +25,14 @@ import csv
 #   http://pymotw.com/2/threading/index.html#module-threading
 #   http://pymotw.com/2/Queue/index.html#module-Queue
 #   https://docs.python.org/2/library/csv.html, particularly the DictWriter object
+#   http://stackoverflow.com/questions/13254241/removing-key-values-pairs-from-a-list-of-dictionaries
 
 
+# NOTE:
+#   Pupil Server by default streams ['timestamp', 'diameter', 'confidence', 'norm_pos', 'id']
+#       'norm_pos' and 'id' are not needed.
+#   Earlier versions of this module modified the Pupil Server code in source,
+#       but a more robust version is given here.
 
 
 class Recorder(Thread):
@@ -70,7 +76,12 @@ class Recorder(Thread):
                 writer = csv.DictWriter(f, fieldnames=header)
                 writer.writeheader()
                 while not self.pupil_data.empty():
-                    datum = self.pupil_data.get()
+                    temp_datum = self.pupil_data.get()
+                    # remove unnecessary key:value pairs from datum
+                    datum = {key: value for key, value in temp_datum.iteritems() if 
+                           (key == 'timestamp' or
+                            key == 'diameter' or
+                            key == 'confidence')}
                     writer.writerow(datum)  
             pass
             return True

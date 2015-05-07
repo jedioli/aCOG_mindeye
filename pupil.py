@@ -25,6 +25,7 @@ import sys
 # RESOURCES
 #   http://stackoverflow.com/questions/2846653/python-multithreading-for-dummies
 #   https://docs.python.org/2/library/multiprocessing.html
+#   http://stackoverflow.com/questions/509211/explain-pythons-slice-notation
 
 
 
@@ -102,8 +103,10 @@ class Remote(Thread):
         while True:
             try:
                 print "Please input a remote command to send..."
+                print "\tEnter 'R' to toggle recording, or 'Q' to quit."
             #    cmd = raw_input("cmd? > ")             # causes crashes in Tk
                 cmd = sys.stdin.readline()
+                print "repr: " + repr(cmd)
             except EOFError:
                 print "Thank you! Terminating..."
                 self.sig_listen.put(('listen','finish'))
@@ -112,12 +115,18 @@ class Remote(Thread):
                 print "Thank you! Terminating..."
                 self.sig_listen.put(('listen','finish'))
                 break
-            self.notify(cmd[0])
+            '''
+            if cmd[-2:] == '\n':    # remove \n
+                print "*********************************"
+                cmd = cmd[:-2]
+            '''
+            cmd += '  '             # accounts for bug in pupil_remote.py
+            self.notify(cmd)   
         return
     
     def notify(self, cmd):
             result = self.socket.send(cmd)
-            if cmd == 'R':
+            if cmd[0] == 'R':
                 self.sig_listen.put(('listen','toggle'))
                 self.toggle_count += 1
             if result is None:
