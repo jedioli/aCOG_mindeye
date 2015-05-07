@@ -3,6 +3,9 @@
  aCOG - Beyond the Mind's Eye
  Copyright (C) 2015  Oliver Hatfield, Sara Fox, Benjamin Sitz, Benjamin Sullivan
 
+ Distributed under the terms of the Apache v.2 License.
+ .............................................
+
  multitetris.py
 
     Controller module for Multi-Tetris
@@ -20,9 +23,21 @@ import tkMessageBox
 import tetris_base
 import sys
 
+# Note: focus_force() is somewhat of an excessive function to use, as it doesn't respect
+#   the native OS's windowing system. it works though.
+
 
 class Tetris_Switcher(object):
-    # used by root window to switch between active games
+    """controller for Multi-Tetris
+    
+    takes Tk.root as parent
+    holds multiple games of Tetris
+    controls active switching between games
+    
+    any number of games is theoretically possible, 
+        though screen resolution restricts number that can be seen
+    please do not move windows manually, as the switching order can be shuffled
+    """
     def __init__(self, parent, num_games):
         self.parent = parent    # usually root
         self.num_games = num_games
@@ -30,9 +45,17 @@ class Tetris_Switcher(object):
         self.active_game = 0
         
         self.parent.bind("<FocusIn>", self.switch_callback)
+        # used as a way to switch to the next game when passed focus by Tetris game,
+        # and immediately send focus to next game
         
     
     def start(self):
+        """start function
+        
+        displays controls (apologies if bad tab formatting)
+        creates Toplevel windows to pass to individual Tetris games
+        stores windows and game controllers
+        """
         tkMessageBox.showwarning(
             title="Controls",
             message="left:\t\tmove left\nright:\tmove right\nup:\t\trotate piece\ndown:\tdrop faster\nspace:\tswitch to next game\n\nCAREFUL! pieces may randomly rotate!",
@@ -51,6 +74,12 @@ class Tetris_Switcher(object):
         
     
     def switch_callback(self, event):
+        """callback function for game switch
+        
+        switches in L->R order
+        works in conjunction with tetris_base space_callback 
+            to highlight active game and darken idle games
+        """
         if not self.game_list:
             print "not yet started"
             return
@@ -68,7 +97,7 @@ class Tetris_Switcher(object):
 
 
 if __name__ == "__main__":
-    
+    print "\nwelcome to Multi-Tetris!\nto quit, just close the Tk GUI windows or quit Tk\n"
     print "please enter number of games"
     how_many_games = int(raw_input('num games? > '))
     

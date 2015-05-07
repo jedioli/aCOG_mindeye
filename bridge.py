@@ -3,6 +3,9 @@
  aCOG - Beyond the Mind's Eye
  Copyright (C) 2015  Oliver Hatfield, Sara Fox, Benjamin Sitz, Benjamin Sullivan
 
+ Distributed under the terms of the Apache v.2 License.
+ .............................................
+
  bridge.py
 
     Main control hub and thread for bridge server
@@ -31,27 +34,31 @@ import record
 
 
 
-
-# helper function for formatting shell commands
 def shellformat(string):
+    """helper function for formatting shell commands
+    """
     return "'" + string.replace("'", "'\\''") + "'"
 
 
-# function to start Pupil Capture
-# CHANGE THE PATH BELOW to your local copy of Pupil Capture
 def start_pupil():
+    """thread function to start Pupil Capture
+    CHANGE THE PATH BELOW to your local copy of Pupil Capture
+    """
     # runs Pupil Capture from source
     path = os.path.abspath("../../pupil/pupil_src/capture/main.py")
     return subprocess.call('python ' + shellformat(path), shell=True)
     
     # if running Pupil Capture using the app, comment the above code and uncomment below:
-    """
+    '''
     path = os.path.abspath("../pupil_capture_0.4.1_mac.app")
     return subprocess.call('open ' + shellformat(path), shell=True)
-    """
+    '''
 
-# main function for starting Pupil Capture, readying and running pupil and record threads
+# 
 def bridge_main(out_file):
+    """main function 
+    starts Pupil Capture, readies and runs listener, remote, and record threads
+    """
     print "*******\nall interaction with the bridge server will occur in the console.\n*******"
     print "loading..."
     starter = threading.Thread(name='starter', target=start_pupil)
@@ -60,7 +67,7 @@ def bridge_main(out_file):
     
     time.sleep(7)
     
-    pupil_data = Queue()
+    pupil_data = Queue()            # to store pupil data between listener <-> recorder
     sig_remote_listen = Queue()     # for message passing between remote <-> listener
     sig_listen_record = Queue()     # for message passing between recorder <-> listener
     
@@ -88,6 +95,7 @@ def bridge_main(out_file):
 
     print "bridge main thread finished"
 
+    # to end program, quit Pupil Capture and Multi-Tetris GUI windows after all threads finish.
 
 
 if __name__ == '__main__':

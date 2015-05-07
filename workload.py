@@ -3,6 +3,9 @@
  aCOG - Beyond the Mind's Eye
  Copyright (C) 2015  Oliver Hatfield, Sara Fox, Benjamin Sitz, Benjamin Sullivan
 
+ Distributed under the terms of the Apache v.2 License.
+ .............................................
+
  workload.py
 
  ---------------------------------- (O)<< ----------------------------------------------

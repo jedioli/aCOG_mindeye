@@ -3,6 +3,9 @@
  aCOG - Beyond the Mind's Eye
  Copyright (C) 2015  Oliver Hatfield, Sara Fox, Benjamin Sitz, Benjamin Sullivan
 
+ Distributed under the terms of the Apache v.2 License.
+ .............................................
+
  record.py
 
     Used to record pupil size data streamed from Pupil Capture to the bridge server
@@ -31,11 +34,17 @@ import csv
 # NOTE:
 #   Pupil Server by default streams ['timestamp', 'diameter', 'confidence', 'norm_pos', 'id']
 #       'norm_pos' and 'id' are not needed.
-#   Earlier versions of this module modified the Pupil Server code in source,
+#   Earlier versions of this project modified the Pupil Server code in source,
 #       but a more robust version is given here.
 
 
 class Recorder(Thread):
+    """recorder thread
+    awaits signal from listener thread that data collection complete
+    records data to .csv or .txt
+        
+    socket and port configured for Pupil Remote defaults
+    """
     def __init__(self, fn, queue, signal):
         super(Recorder, self).__init__()
         self.filename = fn
@@ -43,7 +52,11 @@ class Recorder(Thread):
         self.sig_listen = signal    # Queue for signaling when to start recording
     #    print 'recorder inited'
         
-    def run(self):        
+    def run(self):
+        """thread run function
+        awaits signal from pupil.Listener thread
+        outputs data in message Queue to file
+        """  
         while self.sig_listen.empty():
             pass
         signal = self.sig_listen.get()
@@ -56,6 +69,12 @@ class Recorder(Thread):
         return
         
     def tofile(self):
+        """file output function
+        can output to .txt or .csv
+        
+        to include other data fields, modify 'header' and 
+            the dict comprehension for 'datum' below
+        """  
         if self.filename[-3:] == 'txt':
             with open(self.filename, 'w') as f:
                 while not self.pupil_data.empty():

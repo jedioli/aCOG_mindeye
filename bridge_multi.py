@@ -3,6 +3,9 @@
  aCOG - Beyond the Mind's Eye
  Copyright (C) 2015  Oliver Hatfield, Sara Fox, Benjamin Sitz, Benjamin Sullivan
 
+ Distributed under the terms of the Apache v.2 License.
+ .............................................
+
  bridge_multi.py
  
  Main control hub and thread for bridge server, combined with Multi-Tetris
@@ -16,8 +19,6 @@
 
 ############################################################
 # COMMENTS: prob just enough for someone w/ a little coding exp to know what each fcn does
-#
-# also just realized that this assumes running pupil from source :/
 ############################################################
 
 import subprocess, os, sys
@@ -40,27 +41,37 @@ import multitetris as mt
 
 
 def shellformat(string):
+    """helper function for formatting shell commands
+    """
     return "'" + string.replace("'", "'\\''") + "'"
 
-# function to start Pupil Capture
-# CHANGE THE PATH BELOW to your local copy of Pupil Capture
+
 def start_pupil():
+    """thread function to start Pupil Capture
+    CHANGE THE PATH BELOW to your local copy of Pupil Capture
+    """
     # runs Pupil Capture from source
     path = os.path.abspath("../../pupil/pupil_src/capture/main.py")
     return subprocess.call('python ' + shellformat(path), shell=True)
     
     # if running Pupil Capture using the app, comment the above code and uncomment below:
-    """
+    '''
     path = os.path.abspath("../pupil_capture_0.4.1_mac.app")
     return subprocess.call('open ' + shellformat(path), shell=True)
-    """
+    '''
 
 def start_multitetris():
+    """thread function to start Pupil Capture
+    """
     path = os.path.abspath("multitetris.py")
     return subprocess.call('python ' + shellformat(path), shell=True)
 
 
 def bridge_main(out_file, num_games):
+    """main function 
+    starts Pupil Capture, readies and runs listener, remote, and record threads
+    Multi-Tetris runs in main thread
+    """
     print "*******\nall interaction with the bridge server will occur in the console.\n*******"
     print "loading..."
     starter = threading.Thread(name='starter', target=start_pupil)
@@ -69,7 +80,7 @@ def bridge_main(out_file, num_games):
     
     time.sleep(7)
     
-    pupil_data = Queue()
+    pupil_data = Queue()            # to store pupil data between listener <-> recorder
     sig_remote_listen = Queue()     # for message passing between remote <-> listener
     sig_listen_record = Queue()     # for message passing between recorder <-> listener
     
@@ -97,7 +108,7 @@ def bridge_main(out_file, num_games):
     print "loading Multi-Tetris..."
     time.sleep(5)
     
-    # Tk root must run main thread, so bridge main handles multi-tetris.
+    # Tk root must run in main thread, so bridge main handles multi-tetris.
     root = tk.Tk()
     multi = mt.Tetris_Switcher(root, num_games)
     multi.start()
@@ -105,7 +116,8 @@ def bridge_main(out_file, num_games):
 
     print "bridge main thread finished"
 
-
+    # to end program, quit Pupil Capture and Multi-Tetris GUI windows after all threads finish.
+    
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

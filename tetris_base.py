@@ -12,10 +12,12 @@ Controls:
 	
 """
 """
+ Originally licensed under GNU GPL v3: http://www.gnu.org/licenses/gpl.html
+
  Modified for use with multitetris.py by: 
  ---------------------------------- (O)<< ----------------------------------------------
  aCOG - Beyond the Mind's Eye
- Oliver Hatfield, Sara Fox, Benjamin Sitz, Benjamin Sullivan
+ 2015 Oliver Hatfield, Sara Fox, Benjamin Sitz, Benjamin Sullivan
 
  original source found at: http://code.google.com/p/tetris-tk/
  
@@ -105,7 +107,10 @@ class Board( Frame ):
     # ----------------- additions by OH ---------------------
     
     def clear_board(self):
-        # called by Board.restart()    
+        """clears all landed blocks from the board
+
+        called by Board.restart() 
+        """
         while self.landed:
             block_coords, block_id = self.landed.popitem()
             self.delete_block(block_id)
@@ -420,12 +425,17 @@ class game_controller(object):
     """
     Main game loop and receives GUI callback events for keypresses etc...
     """
-    def __init__(self, parent, root):
+    def __init__(self, parent, root=None):   # when integrated with Multi-Tetris, parent is a Toplevel
         """
         Intialise the game...
         """
         self.parent = parent
-        self.root = root
+    # ----------------- additions by OH ---------------------
+        if not root:
+            self.root = parent
+        else:
+            self.root = root
+    # ------------------ end additions ----------------------
         self.score = 0
         self.level = 0
         self.delay = 700    #ms
@@ -479,6 +489,10 @@ class game_controller(object):
         self.parent.after(5000, self.random_rotate)
     
     def restart(self):
+        """clears the board and resets variables
+
+        called when blocks overflow well 
+        """
         status = self.board.clear_board()
         self.score = 0
         self.level = 0
@@ -487,6 +501,14 @@ class game_controller(object):
         print status + " and restarted"
         
     def random_rotate(self):
+        """random rotation function
+        used to maintain user awareness and vigilance,
+        prevent idle waiting for pieces to drop
+        
+        after 5 sec from start, attempts to rotate every 0.1 sec
+            rotates approx. with 3% of attempts
+        after successful rotate, waits 5 sec
+        """
         rotate_int = randint(1,100)
         if randint(0,1) == 0:
             rand_bool = True
@@ -553,6 +575,9 @@ class game_controller(object):
 
     # ----------------- additions by OH ---------------------
     def space_callback(self, event):
+        """callback function for game switching
+        integrates with multitetris.py
+        """
         self.root.focus_force()
         self.board.canvas.config(bg="gray43")
     # ------------------ end additions ----------------------    
