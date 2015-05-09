@@ -24,7 +24,7 @@ import tetris_base
 import sys
 
 # Note: focus_force() is somewhat of an excessive function to use, as it doesn't respect
-#   the native OS's windowing system. it works though.
+#   the native OS's windowing system. it works though. a better solution would be better.
 
 
 class Tetris_Switcher(object):
@@ -42,7 +42,7 @@ class Tetris_Switcher(object):
         self.parent = parent    # usually root
         self.num_games = num_games
         self.game_list = []
-        self.active_game = 0
+        self.active_game = num_games-1
         
         self.parent.bind("<FocusIn>", self.switch_callback)
         # used as a way to switch to the next game when passed focus by Tetris game,
