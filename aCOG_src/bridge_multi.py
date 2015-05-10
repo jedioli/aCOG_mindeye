@@ -17,9 +17,10 @@
  ---------------------------------- (O)<< ----------------------------------------------
 """
 
-############################################################
-# COMMENTS: prob just enough for someone w/ a little coding exp to know what each fcn does
-############################################################
+# TODO
+#   so I could write another thread that receives the multitetris_adapt thread as input,
+#   and can call those external api calls for showing/hiding games. i just couldn't do
+#   it in the main thread, because Tk is greedy and needs that.
 
 import subprocess, os, sys
 import threading
@@ -61,11 +62,17 @@ def start_pupil():
     '''
 
 def start_multitetris():
-    """thread function to start Pupil Capture
+    """thread function to start Multi-Tetris
+    creates errors when setting number of games in the terminal
+    would require passing number of games as a command line argument
+    
+    could be used for adaptive Multi-Tetris, which always starts with 3 games
     """
-    path = os.path.abspath("multitetris.py")
+    pass
+    '''
+    path = os.path.abspath("multitetris_adapt.py")
     return subprocess.call('python ' + shellformat(path), shell=True)
-
+    '''
 
 def bridge_main(out_file, num_games):
     """main function 
