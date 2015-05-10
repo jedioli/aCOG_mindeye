@@ -5,7 +5,7 @@ Controls:
     Left Arrow      Move left
     Right Arrow     Move right
     Down Arrow      Soft drop
-    Up Arrow        # Hard drop
+    Up Arrow        Hard drop
     'a'             Rotate anti-clockwise (to the left)
     's'             Rotate clockwise (to the right)
     'p'             Pause the game.
@@ -519,7 +519,7 @@ class game_controller(object):
                 rotate_int == 7 or
                 rotate_int == 9 or
                 rotate_int == 8
-            ):  # does (7 or 8 or 9) work?
+            ):
             self.shape.rotate(clockwise=rand_bool)
             self.parent.after(5000, self.random_rotate)
         else:

@@ -42,7 +42,7 @@ class Tetris_Switcher(object):
         self.parent = parent    # usually root
         self.num_games = num_games
         self.game_list = []
-        self.active_game = num_games-1
+        self.active_game = num_games-1  # in order to start with game 0 after start()
         
         self.parent.bind("<FocusIn>", self.switch_callback)
         # used as a way to switch to the next game when passed focus by Tetris game,

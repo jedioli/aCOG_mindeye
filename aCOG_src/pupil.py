@@ -97,7 +97,7 @@ class Listener(Thread):
             self.put_counter += 1
         else:
             # these are all "Gaze" events, but only ever lists timestamp and confidence.
-            #   unused in aCOG_mindeye.
+            # unused in aCOG_mindeye.
             pass
         pass
 

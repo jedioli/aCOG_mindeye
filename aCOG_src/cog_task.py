@@ -21,4 +21,8 @@
 #           needed. I can potentially see an interface via zeroMQ, but direct function
 #           calls might not work. this would definitely require a separate thread.
 #
+#       actually, this is DEFINITELY needed if I want to modify Multi-Tetris externally.
+#           Tk hogs the entire bridge main thread, so only another thread (that holds
+#           a reference to the Tetris_Switcher!!) could mess with it.
+#
 #   for now, this module left intentionally empty.
