@@ -425,7 +425,7 @@ class game_controller(object):
     """
     Main game loop and receives GUI callback events for keypresses etc...
     """
-    def __init__(self, parent, root=None):   # when integrated with Multi-Tetris, parent is a Toplevel
+    def __init__(self, parent, root=None, randrot=False):   # when integrated with Multi-Tetris, parent is a Toplevel
         """
         Intialise the game...
         """
@@ -435,6 +435,8 @@ class game_controller(object):
             self.root = parent
         else:
             self.root = root
+        
+        self.rand_rot = randrot
     # ------------------ end additions ----------------------
         self.score = 0
         self.level = 0
@@ -486,7 +488,8 @@ class game_controller(object):
         
         self.parent.bind("<space>", self.space_callback)
         
-        self.parent.after(5000, self.random_rotate)
+        if self.rand_rot:           # added switch for random rotations
+            self.parent.after(5000, self.random_rotate)
     
     def restart(self):
         """clears the board and resets variables

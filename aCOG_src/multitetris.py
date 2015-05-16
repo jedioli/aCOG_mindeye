@@ -38,11 +38,12 @@ class Tetris_Switcher(object):
         though screen resolution restricts number that can be seen
     please do not move windows manually, as the switching order can be shuffled
     """
-    def __init__(self, parent, num_games):
+    def __init__(self, parent, num_games, rand_rot):    # added random rotation switch
         self.parent = parent    # usually root
         self.num_games = num_games
         self.game_list = []
         self.active_game = num_games-1  # in order to start with game 0 after start()
+        self.randrot_bool = rand_rot                    # added random rotation switch
         
         self.parent.bind("<FocusIn>", self.switch_callback)
         # used as a way to switch to the next game when passed focus by Tetris game,
@@ -56,16 +57,24 @@ class Tetris_Switcher(object):
         creates Toplevel windows to pass to individual Tetris games
         stores windows and game controllers
         """
+    # -------------------------- additions by OH --------------------------
+        control_str = "left:\t\tmove left\nright:\tmove right\nup:\t\trotate piece\ndown:\tdrop faster\nspace:\tswitch to next game"
+        if self.randrot_bool:
+            control_str += "\n\nCAREFUL! pieces may randomly rotate!"
+    # --------------------------- end additions ---------------------------
+        
         tkMessageBox.showwarning(
             title="Controls",
-            message="left:\t\tmove left\nright:\tmove right\nup:\t\trotate piece\ndown:\tdrop faster\nspace:\tswitch to next game\n\nCAREFUL! pieces may randomly rotate!",
+            message=control_str,
             parent=self.parent
             )
         
         for x in range(self.num_games):
             window = tk.Toplevel(self.parent)
             window.title("Tetris Tk" + str(x+1))
-            control = tetris_base.game_controller( window , self.parent)
+    # -------------------------- additions by OH --------------------------
+            control = tetris_base.game_controller(window, self.parent, self.randrot_bool)
+    # --------------------------- end additions ---------------------------
             window.geometry('%dx%d+%d+%d' % (209,670, x*214, 28))
             self.game_list.append((window, control)) 
         
@@ -101,9 +110,17 @@ if __name__ == "__main__":
     print "please enter number of games"
     how_many_games = int(raw_input('num games? > '))
     
+    # -------------------------- additions by OH --------------------------
+    print "would you like to turn on random rotations? y or n"
+    spin_char = raw_input('randrot? > ')
+    if spin_char[0] == 'y' or spin_char[0] == 'Y':
+        spin_bool = True
+    else:
+        spin_bool = False
+    # --------------------------- end additions ---------------------------
     
     root = tk.Tk()
     
-    multi = Tetris_Switcher(root, how_many_games)
+    multi = Tetris_Switcher(root, how_many_games, spin_bool)
     multi.start()
     
